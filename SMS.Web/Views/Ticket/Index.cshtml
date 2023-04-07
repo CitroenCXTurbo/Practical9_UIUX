@@ -1,0 +1,40 @@
+﻿@model IList<Ticket>
+
+<!-- TBC Add breadcrumbs -->
+
+<div class="card rounded shadow p-4">
+  
+   <div class="d-flex align-items-center justify-content-between mb-4">
+      <h3>Open Ticket List</h3>
+
+      <!-- TBC - Q6 add button to create a ticket. -->
+      <!-- Consider adding an icon such as 'bi bi-plus -->
+   </div>
+
+
+   <table class="table">
+      <thead>
+      <tr>
+         <th>Id</th>
+         <th>Student</th>
+         <th>Issue</th>
+         <th>Created</th>           
+         <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+         @foreach(var t in Model) {
+            <tr>
+               <td>@t.Id</td>
+               <td>@t.Student.Name</td>
+               <td>@t.Issue</td>
+               <td>@t.CreatedOn</td>              
+               <td>
+                  <!-- TBC Q6 - use form to submit ticket Id to close action -->
+                  <!-- consider using bootstrap icon 'bi bi-tools' -->                  
+               </td>
+            </tr>
+         }
+      </tbody>
+   </table>
+</div>
