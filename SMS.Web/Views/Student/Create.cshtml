@@ -2,6 +2,12 @@
 
 <!-- TBC add a breadcrumb partial -->
 
+<partial name="_BreadCrumbs" model=@(new [] {
+("/", "Home"),
+("/student", "Students"),
+($"", "Create"),
+}) />
+
 <div class="card rounded shadow p-4">
     <h3>Create Student</h3>
 

@@ -11,7 +11,7 @@ public class StudentController : BaseController
 
     public StudentController()
     {
-        svc = new StudentServiceDb();            
+        svc = new StudentServiceDb();
     }
 
     // GET /student
@@ -19,7 +19,7 @@ public class StudentController : BaseController
     {
         // load students using service and pass to view
         var data = svc.GetStudents();
-        
+
         return View(data);
     }
 
@@ -27,10 +27,12 @@ public class StudentController : BaseController
     public IActionResult Details(int id)
     {
         var student = svc.GetStudent(id);
-      
-        if (student is null) {
-            // TBC - Q2 replace with Alert and Redirect
-            return NotFound();
+
+        if (student is null)
+        {
+
+            Alert("Student not found", AlertType.warning);
+            return RedirectToAction(nameof(Index));
         }
         return View(student);
     }
@@ -45,23 +47,33 @@ public class StudentController : BaseController
     // POST /student/create
     [HttpPost]
     public IActionResult Create(Student s)
-    {   
+    {
         // TBC - Q1 validate email is unique
-        
+        var exists = svc.GetStudentByEmail(s.Email);
+        if (exists is not null)
+        {
+            ModelState.AddModelError(nameof(s.Email), "The email address is already in use");
+        }
 
         // complete POST action to add student
         if (ModelState.IsValid)
         {
             // call service AddStudent method using data in s
             var student = svc.AddStudent(s);
-            if (student is null) 
+            if (student is null) // if the student cant be added for whatever reason
             {
                 // TBC - Q2 replace with Alert and Redirect
-                return NotFound();
+
+                Alert($"Student could not be created, possible duplicate email", AlertType.warning);
+                return RedirectToAction(nameof(Index)); // if the student cant be created redirect back to the index
             }
-            return RedirectToAction(nameof(Details), new { Id = student.Id});   
+            else
+            {
+                Alert($"Student created successfully", AlertType.success); //nice wee alert if it works
+            }
+            return RedirectToAction(nameof(Details), new { Id = student.Id }); //if the student could be created redirect to view the student 
         }
-        
+
         // redisplay the form for editing as there are validation errors
         return View(s);
     }
@@ -75,9 +87,10 @@ public class StudentController : BaseController
         // check if student is null
         if (student is null)
         {
-            // TBC - Q2 replace with Alert and Redirect
-            return NotFound();
-        }  
+
+            Alert($"No such student with the id of {id}", AlertType.info);
+            return RedirectToAction(nameof(Index));
+        }
 
         // pass student to view for editing
         return View(student);
@@ -88,14 +101,18 @@ public class StudentController : BaseController
     public IActionResult Edit(int id, Student s)
     {
         // TBC - Q1 add validation error if email exists and is not owned by student being edited 
-        
+        var exists = svc.GetStudentByEmail(s.Email);
+        if (exists != null && exists.Id != s.Id) //if the id of the student who owned the email is not the same student who we are currently trying to save then that is a problem
+        {
+            ModelState.AddModelError(nameof(s.Email), "The email address is already in use");
+        }
 
         // complete POST action to save student changes
         if (ModelState.IsValid)
-        {            
+        {
             var student = svc.UpdateStudent(s);
             // TBC - Q2 Add alert when update failed
-
+            Alert($"Invald Parameters", AlertType.info);
             // redirect back to view the student details
             return RedirectToAction(nameof(Details), new { Id = s.Id });
         }
@@ -114,8 +131,10 @@ public class StudentController : BaseController
         {
             // TBC - Q2 replace with Alert and Redirect
             return NotFound();
-        }     
-        
+            Alert($"Student with id of {id} not found", AlertType.info);
+            return RedirectToAction(nameof(Index));
+        }
+
         // pass student to view for deletion confirmation
         return View(student);
     }
@@ -127,12 +146,12 @@ public class StudentController : BaseController
         // delete student via service
         var deleted = svc.DeleteStudent(id);
         // TBC - Q2 add success / failure Alert
-        
+
         // redirect to the index view
         return RedirectToAction(nameof(Index));
     }
 
-     // ============== Student ticket management ==============
+    // ============== Student ticket management ==============
 
     // GET /student/ticketcreate/{id}
     public IActionResult TicketCreate(int id)
@@ -141,13 +160,15 @@ public class StudentController : BaseController
         if (student == null)
         {
             // TBC - replace with Alert and Redirect
+            // Alert($"No such student with the id of {id}", AlertType.info);
+            // return RedirectToAction(nameof(Index));
             return NotFound();
-        }
+        } 
 
         // create a ticket view model and set foreign key
-        var ticket = new Ticket { StudentId = id }; 
+        var ticket = new Ticket { StudentId = id };
         // render blank form
-        return View( ticket );
+        return View(ticket);
     }
 
     // POST /student/ticketcreate
@@ -155,8 +176,8 @@ public class StudentController : BaseController
     public IActionResult TicketCreate(Ticket t)
     {
         if (ModelState.IsValid)
-        {                
-            var ticket = svc.CreateTicket(t.StudentId, t.Issue); 
+        {
+            var ticket = svc.CreateTicket(t.StudentId, t.Issue);
             // TBC - Q2 add alert for success/failure
 
             // redirect to display student - note how Id is passed
@@ -168,7 +189,7 @@ public class StudentController : BaseController
         return View(t);
     }
 
-     // GET /student/ticketedit/{id}
+    // GET /student/ticketedit/{id}
     public IActionResult TicketEdit(int id)
     {
         var ticket = svc.GetTicket(id);
@@ -176,8 +197,8 @@ public class StudentController : BaseController
         {
             // TBC - replace with Alert and Redirect
             return NotFound();
-        }        
-        return View( ticket );
+        }
+        return View(ticket);
     }
 
     // POST /student/ticketedit
@@ -185,7 +206,7 @@ public class StudentController : BaseController
     public IActionResult TicketEdit(int id, Ticket t)
     {
         if (ModelState.IsValid)
-        {                
+        {
             var ticket = svc.UpdateTicket(id, t.Issue);
             // TBC - Q2 add alert for success/failure
 
@@ -208,8 +229,8 @@ public class StudentController : BaseController
         {
             // TBC - Q2 replace with Alert and Redirect
             return NotFound();
-        }     
-        
+        }
+
         // pass ticket to view for deletion confirmation
         return View(ticket);
     }

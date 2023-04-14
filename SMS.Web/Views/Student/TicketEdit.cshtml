@@ -1,7 +1,13 @@
 @model Ticket
 
 <!-- TBC add a breadcrumb partial -->
-
+<partial name="_BreadCrumbs" model=@(new [] {
+("/", "Home"),
+("/student", "Students"),
+($"/student/details/{Model.StudentId}", $"Student Id Number: {Model.StudentId}"),
+($"/student/details/{Model.Id}", $"Ticket Id Number: {Model.Id}"),
+($"", "TicketEdit"),
+}) />
 
 <div class="card shadow rounded p-4">
     <h3>Edit Ticket</h3>

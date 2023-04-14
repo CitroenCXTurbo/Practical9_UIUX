@@ -25,7 +25,7 @@ public class Student
     [Range(0,100)]
     public double Grade { get; set; }
 
-    [Url]
+    [Url][UrlResource]
     public string PhotoUrl { get; set; }     
 
     // 1-N Relationship - a student has 0 or more tickets

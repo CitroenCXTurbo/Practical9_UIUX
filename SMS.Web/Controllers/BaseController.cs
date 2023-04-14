@@ -11,3 +11,4 @@ public class BaseController : Controller
         TempData["Alert.Type"] = type.ToString();
     }
 }
+

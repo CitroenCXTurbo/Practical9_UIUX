@@ -36,10 +36,10 @@
                     <td>@s.Age</td>
                     <td>                       
                         <a asp-action="Details" asp-route-id=@s.Id>
-                            <i class="bi bi-display-fill me-2" title="view student" arial-label="view student"></i>
+                            <i class="bi bi-eyeglasses me-2" title="view student" arial-label="view student">VIEW</i>  @*annotations also to avoid any ambiguity may not be sure what a symbol does @**@
                         </a>
                         <a asp-action="Edit" asp-route-id=@s.Id>
-                            <i class="bi bi-pencil-fill me-2" title="edit student" aria-label="edit student"></i>
+                            <i class="bi bi-pencil-fill me-2" title="edit student" aria-label="edit student">EDIT</i>
                         </a>
                     </td>
                 </tr>

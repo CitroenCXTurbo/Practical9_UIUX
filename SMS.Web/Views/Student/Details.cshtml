@@ -1,6 +1,15 @@
 @model Student
 
 <!-- TBC add a breadcrumb partial -->
+   
+<partial name="_BreadCrumbs" model=@(new [] {
+("/", "Home"),
+("/student", "Students"),
+($"", $"Student Id Number: {Model.Id}"),
+}) />
+
+
+
 
 
 <div class="card rounded shadow p-4">
@@ -61,7 +70,24 @@
         <div class="col-4">
 
             <!-- TBC Q3 only display img when photo provided otherwise display suitable span -->
-            <img src="@Model.PhotoUrl" class="img-fluid" alt="student photo">
+            <!--  //note use of null conditional operator? ? is the null conditional operator to stop a runtime error if its null -->
+            @if (Model.PhotoUrl?.Length > 0)
+            {
+                // display image
+                <img src="@Model.PhotoUrl" class="img-fluid" alt="student photo">
+            }
+            else
+            {
+                //display span
+                <div class="card text-center shadow">
+                    <div class="card-body">
+                        <span class="text-danger"><b>NO PHOTO AVAILABLE</b></span>
+                    </div>
+                </div>
+            }
+
+
+            
 
         </div>
 

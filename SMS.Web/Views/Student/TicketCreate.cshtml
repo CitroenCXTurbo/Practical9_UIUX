@@ -1,11 +1,16 @@
 @model Ticket
 
 <!-- breadcrumb partial -->
-
+<partial name="_BreadCrumbs" model=@(new [] {
+("/", "Home"),
+("/student", "Students"),
+($"/student/details/{Model.StudentId}", $"{Model.StudentId}"),
+($"", "TicketCreate"),
+}) />
 
 <div class="card shadow rounded p-4">
     <h3>Create Ticket</h3>
-
+6
     <form asp-action="TicketCreate">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     

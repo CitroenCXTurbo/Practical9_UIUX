@@ -3,47 +3,77 @@
 <h4>Tickets</h4>
 <table class="table table-sm">
     <thead>
-        <tr>          
+        <tr>
             <th>Issue</th>
-            <th>Created</th>  
-            <th>Active</th>       
-            <th>Actions</th>  
+            <th>Created</th>
+            <th>Active</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @if (Model.Tickets.Count == 0)
         {
-            <tr>              
+            <tr>
                 <td colspan="4">No tickets...</td>
             </tr>
         }
         else
         {
-            @foreach(var t in Model.Tickets) {
-                <tr>             
+            @foreach (var t in Model.Tickets)
+            {
+                <tr>
                     <td>@t.Issue</td>
-                    <td>@t.CreatedOn</td>  
-                    <td> 
+                    <td>@t.CreatedOn</td>
+                    <td>
                         <!-- TBC Q4 - display suitable icons -->
-                        @t.Active                                             
+                        @* @(t.Active ? "Yes" : "No") *@
+
+                        <!-- make it show an icon rather than yes or no -->
+
+                        @if(t.Active)
+                        {
+                            <i class="bi bi-bell-fill"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-bell-slash"></i>
+                        }
+
+
                     </td>
                     <td>
                         <!-- TBC Q4 - display disabled button when ticket is inactive -->
-                        <a asp-action="TicketDelete" asp-route-id="@t.Id" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash-fill" title="delete ticket"></i>
-                            <span class="ms-1 d-none d-md-inline">Delete</span>    
-                        </a>
-                     
-                        <!-- TBC Q4 - display disabled button when ticket is inactive -->           
-                        <a asp-action="TicketEdit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-dark">
-                            <i class="bi bi-pen-fill" title="edit ticket"></i>
-                            <span class="ms-1 d-none d-md-inline">Edit</span>    
-                        </a>
-                        
-                    </td>             
+                        @if (t.Active) @* if the ticket is ACTIVE *@
+                        {
+                            <a asp-action="TicketDelete" asp-route-id="@t.Id" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash-fill" title="delete ticket"></i>
+                                Delete
+                            </a>
+
+                            <!-- TBC Q4 - display disabled button when ticket is inactive -->
+                            <a asp-action="TicketEdit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-dark">
+                                <i class="bi bi-pen-fill" title="edit ticket"></i>
+                                Edit
+                            </a>
+                        }
+                        else @* if the ticket is inactive *@
+                        {
+                            <button disabled class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-trash-fill" title="delete ticket"></i>
+                                Delete
+                            </button>
+
+                            <!-- TBC Q4 - display disabled button when ticket is inactive -->
+                            <button disabled class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pen-fill" title="edit ticket"></i>
+                                Edit
+                            </button>
+                        }
+
+                    </td>
                 </tr>
-                
+
             }
         }
     </tbody>
-</table> 
+</table>

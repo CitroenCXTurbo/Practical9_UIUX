@@ -28,21 +28,32 @@ namespace SMS.Web.Controllers
             // TBC - Q5 close ticket via service then check that ticket was closed
             // if not display a warning/error alert otherwise a success alert
              
+            var closed = svc.CloseTicket(id);
+            if (closed is null)
+            {
+                Alert ("This ticket was already closed, it can not be closed again", AlertType.warning);
+            }
+            else
+            {
+                Alert ("This ticket was closed successfully", AlertType.success);
+            }
+
             return RedirectToAction(nameof(Index));
         }       
         
         // GET /ticket/create
         public IActionResult Create()
         {
-            // TBC Q5 - get list of students using service
-            
-                       
-            var tvm = new TicketViewModel {
-                // TBC Q5 - populate select list property using list of students
-               
-            };
+            var students = svc.GetStudents();
 
-            // render blank form passing view model as a a parameter
+            var selectListItems = new SelectList(students, "Id", "Name");
+
+                      
+            var tvm = new TicketViewModel {
+                Students = selectListItems 
+                                         
+            };
+            
             return View(tvm);
         }
        
@@ -50,12 +61,26 @@ namespace SMS.Web.Controllers
         [HttpPost]
         public IActionResult Create(TicketViewModel tvm)
         {
-            // TBC - Q5 check if modelstate is valid and create ticket, display success alert and redirect to index
-            
-
-            // TBC - Q6 before sending viewmodel back (due to validation issues)
-            //       repopulate the select list
+            if (ModelState.IsValid)
+            {
+                var ticket = svc.CreateTicket(tvm.StudentId, tvm.Issue); //these paramaters come from the ticket view model
+                if (ticket is not null) 
+                {
+                    Alert($"Ticket Created", AlertType.info);   
+                } 
+                else 
+                {
+                    Alert($"Ticket could not be created", AlertType.warning);
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View(tvm);
         }
     }
 }
+
+// TBC - Q5 check if modelstate is valid and create ticket, display success alert and redirect to index
+            
+
+            // TBC - Q6 before sending viewmodel back (due to validation issues)
+            //       repopulate the select list

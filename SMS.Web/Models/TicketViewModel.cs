@@ -7,7 +7,7 @@ public class TicketViewModel
     public SelectList Students { set; get; }
 
     // Collecting StudentId and Issue in Form
-    [Required(ErrorMessage = "Please select a student")]
+    [Required(ErrorMessage = "PLEASE select a student")]
     [Display(Name = "Select Student")]
     public int StudentId { get; set; }
 
